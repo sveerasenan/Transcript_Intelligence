@@ -1,0 +1,176 @@
+# Category definitions with keywords and scoring weights
+# Each category has keywords that are matched against meeting title, topics, and summary
+# Weights determine how much each match location contributes to the score
+# Requirements filter categories based on participant composition
+
+categories:
+  customer_support:
+    name: "Customer Support"
+    description: "Customer reaching out with issues"
+    keywords:
+      - "Support Case"
+      - "ticket"
+      - "issue"
+      - "error"
+      - "problem"
+      - "billing"
+      - "inquiry"
+      - "troubleshoot"
+      - "help"
+      - "API"
+      - "integration"
+      - "data gap"
+    weights:
+      title: 15 # Title matches are weighted highest - increased for high confidence
+      topics: 2 # Topic matches are medium weight
+      summary: 1 # Summary matches are lowest weight
+    requires_customer: false
+
+  incident_response:
+    name: "Incident Response"
+    description: "Outage and incident management"
+    keywords:
+      - "outage"
+      - "incident"
+      - "remediation"
+      - "root cause"
+      - "post-mortem"
+      - "postmortem"
+      - "RCA"
+      - "failure"
+      - "cascading"
+      - "down"
+      - "restore"
+      - "impact assessment"
+    weights:
+      title: 15 # Increased for high confidence
+      topics: 2
+      summary: 1
+    sentiment_boost: true # Add bonus if sentiment is negative
+    boost_value: 2
+
+  external_renewal:
+    name: "External - Renewal"
+    description: "Customer renewal and contract discussions"
+    keywords:
+      - "renewal"
+      - "contract"
+      - "pricing"
+      - "negotiate"
+      - "terms"
+      - "agreement"
+      - "subscription"
+      - "commercial"
+    weights:
+      title: 15 # Increased to 15 - renewal in title is highly definitive
+      topics: 2
+      summary: 1
+    requires_customer: true # Must have customer emails
+    renewal_boost: true # Add bonus when "renewal" appears in title
+    boost_value: 10 # Strong boost for definitive renewal meetings
+
+  external_review:
+    name: "External - Review/Feedback"
+    description: "Customer check-ins and feedback"
+    keywords:
+      - "review"
+      - "feedback"
+      - "adoption"
+      - "check-in"
+      - "QBR"
+      - "status"
+      - "concerns"
+      - "discussion"
+      - "platform"
+    weights:
+      title: 15 # Increased for high confidence
+      topics: 2
+      summary: 1
+    requires_customer: true
+
+  product_implementation:
+    name: "Product Implementation"
+    description: "Deployment and onboarding"
+    keywords:
+      - "deployment"
+      - "kickoff"
+      - "onboarding"
+      - "implementation"
+      - "migration"
+      - "setup"
+      - "launch"
+      - "rollout"
+    weights:
+      title: 15 # Increased for high confidence
+      topics: 2
+      summary: 1
+    requires_customer: false
+
+  internal_planning:
+    name: "Internal Planning"
+    description: "Team planning and strategy"
+    keywords:
+      - "planning"
+      - "roadmap"
+      - "strategy"
+      - "sync"
+      - "all hands"
+      - "all-hands"
+      - "quarterly"
+      - "team"
+      - "update"
+      - "retrospective"
+      - "retro"
+      - "sprint retro"
+      - "sprint retrospective"
+    weights:
+      title: 15 # Increased to 15 for high confidence
+      topics: 2
+      summary: 1
+    requires_internal_only: true # Must be all internal emails
+    internal_boost: true # Add bonus for internal-only meetings
+    boost_value: 5 # Strong boost to prioritize over incident_response
+
+  compliance_audit:
+    name: "Compliance/Audit"
+    description: "Compliance and security reviews"
+    keywords:
+      - "audit"
+      - "compliance"
+      - "SOC 2"
+      - "security review"
+      - "certification"
+      - "ISO"
+      - "attestation"
+      - "controls"
+    weights:
+      title: 15 # Increased for high confidence
+      topics: 2
+      summary: 1
+    requires_customer: false
+
+  escalation:
+    name: "Escalation"
+    description: "Critical customer escalations"
+    keywords:
+      - "escalate"
+      - "urgent"
+      - "critical"
+      - "priority"
+      - "crisis"
+      - "vocal"
+      - "frustrated"
+      - "churn risk"
+      - "churn"
+      - "at risk"
+      - "cancellation"
+    weights:
+      title: 15 # Increased for high confidence
+      topics: 2
+      summary: 1
+    sentiment_boost: true
+    boost_value: 3
+    churn_risk_boost: true # NEW: Boost when churn appears in topics
+    churn_boost_value: 8 # Strong boost for churn risk signals
+    negative_sentiment_override: true # NEW: Force escalation for negative sentiments
+    requires_customer: true

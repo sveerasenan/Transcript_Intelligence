@@ -1,0 +1,166 @@
+# Organization Name Mapping Configuration
+# ========================================
+#
+# This file normalizes organization names from meeting titles and email domains.
+#
+# Format:
+#   canonical_name:
+#     keywords:
+#       - variant1
+#       - variant2
+#     domain_pattern: optional regex pattern for email domains
+#
+# The canonical_name will be used as the display name in the application.
+# Keywords are matched case-insensitively against extracted organization names.
+
+organizations:
+  Blackridge Investments:
+    keywords:
+      - blackridge
+      - blackridgeinvest
+      - blackridge investments
+      - blackridge investments custom
+    domain_pattern: "blackridge.*"
+
+  TechCorp Solutions:
+    keywords:
+      - techcorp
+      - tech corp
+      - techcorp solutions
+    domain_pattern: "techcorp.*"
+
+  Global Manufacturing Inc:
+    keywords:
+      - global mfg
+      - globalmfg
+      - global manufacturing
+    domain_pattern: "globalmfg.*"
+
+  DataStream Analytics:
+    keywords:
+      - datastream
+      - data stream
+      - datastreamanalytics
+    domain_pattern: "datastream.*"
+
+  CloudFirst Technologies:
+    keywords:
+      - cloudfirst
+      - cloud first
+      - cloudfirsttech
+    domain_pattern: "cloudfirst.*"
+
+  Brightpath Commerce:
+    keywords:
+      - Brightpath Commerce
+      - Brightpath Commerce Invoice
+      - Brightpath Commerce Slow
+    domain_pattern: "brightpathcommerce.*"
+
+  Clearwater Medical:
+    keywords:
+      - Clearwater Medical
+      - Clearwater Medical Overage
+    domain_pattern: "clearwatermed.*"
+
+  Cobalt Software:
+    keywords:
+      - Cobalt Software
+      - Cobaltsoftware
+    domain_pattern: "cobaltsoftware.*"
+
+  Crestline Wealth:
+    keywords:
+      - Crestline Wealth
+      - Crestline Wealth Group
+    domain_pattern: "crestlinewealth.*"
+
+  Forge Industries:
+    keywords:
+      - Forge Industries
+      - Forge Industries Comply
+      - Forge Industries Detect
+    domain_pattern: "forgeindustries.*"
+
+  Meridian Capital:
+    keywords:
+      - Meridian Capital
+      - Meridian Capital Granular
+      - Meridian Capital Scim
+    domain_pattern: "meridiancapital.*"
+
+  Nimbus Platform:
+    keywords:
+      - Nimbus Platform
+      - Nimbus Platform Custom
+    domain_pattern: "nimbusplatform.*"
+
+  Northstar Pharma:
+    keywords:
+      - Northstar Pharma
+      - Northstarpharma
+    domain_pattern: "northstarpharma.*"
+
+  Pineridge Systems:
+    keywords:
+      - Pineridge Systems
+      - Pineridge Systems Cloudprime
+    domain_pattern: "pineridge.*"
+
+  Pinnacle Insurance:
+    keywords:
+      - Pinnacle Insurance
+      - Pinnacle Insurance Comply
+    domain_pattern: "pinnacleins.*"
+
+  Ridgeline Logistics:
+    keywords:
+      - Ridgeline Logistics
+      - Ridgeline Logistics Detect
+    domain_pattern: "ridgelinelogistics.*"
+
+  Silverline Brands:
+    keywords:
+      - Silverline Brands
+      - Silverline Brands Backup
+      - Silverline Brands Comply
+      - Silverline Brands Detect
+    domain_pattern: "silverlinebrands.*"
+
+  Steelpoint Manufacturing:
+    keywords:
+      - Steelpoint Manufacturing
+      - Steelpoint Manufacturing Ldap
+    domain_pattern: "steelpointmfg.*"
+
+  Stratos cloud:
+    keywords:
+      - Stratos cloud
+      - Stratos cloud Logvault
+    domain_pattern: "stratoscloud.*"
+
+  Summit Trust:
+    keywords:
+      - Summit Trust
+      - Summit Trust Billing
+      - Summit Trust Detect
+    domain_pattern: "summittrust.*"
+
+  Trailhead Marketplace:
+    keywords:
+      - Trailhead Marketplace
+      - Trailhead Marketplace Detect
+    domain_pattern: "trailheadmkt.*"
+
+# Special mappings for common patterns
+internal:
+  keywords:
+    - internal
+    - aegiscloud
+    - aegis
+  domain_pattern: "aegiscloud\\.com"
+
+unknown:
+  keywords:
+    - unknown
+    - ""
