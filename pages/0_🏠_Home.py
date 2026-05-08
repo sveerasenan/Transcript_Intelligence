@@ -70,9 +70,9 @@ def main():
         
         **📊 Category** - View all meetings in a searchable table with advanced filters  
         **🏢 Organization** - Deep-dive into specific customer accounts  
-        **💭 Sentiment** - Analyze sentiment patterns (Coming in Phase 2)  
-        **🚧 Recurring Blockers** - Identify common issues (Coming in Phase 2)  
-        **⚠️ Churn Risks** - Early warning system for at-risk accounts (Coming in Phase 2)
+        **💭 Sentiment** - Analyze sentiment patterns (Implemented, More to come in next Phase)  
+        **🚧 Recurring Blockers** - Identify common issues (Coming in Next Phase)  
+        **⚠️ Churn Risks** - Early warning system for at-risk accounts (Coming in Next Phase)
         """)
     
     with col2:

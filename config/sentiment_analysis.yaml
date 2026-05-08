@@ -1,0 +1,166 @@
+# Sentiment Analysis Configuration
+# =================================
+#
+# This file contains all thresholds, constants, and configuration
+# for sentiment analysis across call types.
+#
+# Author: Aegis Transcript Intelligence Team
+# Date: 2026-05-07
+
+# Sentiment Thresholds
+# --------------------
+# These thresholds determine when alerts and insights are triggered
+
+thresholds:
+  # 5-Tier Sentiment Classification System
+  # Critical: 0.0-2.4 - Severe issues, immediate escalation required
+  critical_threshold: 2.4
+
+  # Needs Attention: 2.5-3.4 - Below acceptable, requires investigation
+  needs_attention_threshold: 3.4
+
+  # Acceptable: 3.5-3.9 - Meeting baseline expectations
+  acceptable_threshold: 3.9
+
+  # Strong: 4.0-4.4 - Good customer experience
+  strong_threshold: 4.4
+
+  # Exceptional: 4.5-5.0 - Outstanding service
+  # (no threshold needed, anything above strong_threshold)
+
+  # Legacy thresholds for backward compatibility
+  risk_threshold: 2.5 # High risk - critical issues, immediate action needed
+  neutral_threshold: 3.0 # Concern zone - monitor closely, investigate trends
+  target_threshold: 3.5 # Good customer experience
+
+  # Trend change thresholds (absolute change in sentiment points)
+  trend_improving: 0.3 # Improvement greater than this is significant
+  trend_declining: -0.3 # Decline less than this is significant
+
+  # Variance threshold - difference between best and worst call types
+  high_variance: 1.0
+
+  # Outage detection threshold - sentiment below this in incident meetings
+  outage_sentiment: 3.5 # Changed from 3.0 - outages typically show even more pronounced sentiment drops
+
+# Trend Analysis Configuration
+# -----------------------------
+trend_analysis:
+  # Number of days to look back for recent trend window
+  window_days: 30
+
+  # Minimum meetings required to calculate meaningful trends
+  min_meetings_for_trend: 3
+
+# Insight Rule Configurations
+# ----------------------------
+# Each rule has specific parameters for when it should trigger
+# Uses 5-tier sentiment system:
+# 🔴 0.0-2.4: Critical | 🟠 2.5-3.4: Needs Attention | 🟡 3.5-3.9: Acceptable
+# 🟢 4.0-4.4: Strong | ⭐ 4.5-5.0: Exceptional
+
+insight_rules:
+  at_risk:
+    enabled: true
+    # Triggers when sentiment below risk_threshold (2.5 - Needs Attention zone)
+    # Critical issues (<2.4) will definitely trigger this
+    priority: high
+
+  declining_trend:
+    enabled: true
+    # Change must be less than trend_declining threshold
+    priority: high
+
+  improving_trend:
+    enabled: true
+    # Change must be greater than trend_improving threshold
+    priority: medium
+
+  outage_detection:
+    enabled: true
+    # Requires: incident meetings + outage keywords + low sentiment
+    priority: critical
+    min_incident_count: 1
+    keywords:
+      - outage
+      - cascading
+      - remediation
+      - downtime
+      - service interruption
+
+  inconsistent_experience:
+    enabled: true
+    # Variance between call types must exceed high_variance
+    priority: medium
+    min_call_types: 2
+
+# Visualization Settings
+# ----------------------
+visualization:
+  # Colors for each call type (hex codes)
+  call_type_colors:
+    Customer Support: "#EF4444" # Red - emphasizes at-risk nature
+    External: "#3B82F6" # Blue - neutral/professional
+    Internal: "#10B981" # Green - positive team dynamics
+    Unknown: "#6B7280" # Gray - undefined
+
+  # Default call type color for new types
+  default_color: "#9CA3AF"
+
+  # Chart height in pixels
+  chart_height: 500
+
+  # Reference line styles
+  reference_lines:
+    critical:
+      y_value: 2.4
+      color: "#DC2626" # Red-600
+      opacity: 0.3
+      label: "🔴 Critical (2.4)"
+    needs_attention:
+      y_value: 3.4
+      color: "#F59E0B" # Amber-500
+      opacity: 0.3
+      label: "🟠 Needs Attention (3.4)"
+    acceptable:
+      y_value: 3.9
+      color: "#FBBF24" # Yellow-400
+      opacity: 0.3
+      label: "🟡 Acceptable (3.9)"
+    strong:
+      y_value: 4.4
+      color: "#10B981" # Green-500
+      opacity: 0.3
+      label: "🟢 Strong (4.4)"
+    # Note: Exceptional (4.5-5.0) doesn't need a line, it's above strong
+
+# Export Settings
+# ---------------
+export:
+  # Filename pattern for CSV exports (strftime format)
+  filename_pattern: "sentiment_analysis_%Y%m%d_%H%M%S.csv"
+
+  # Fields to include in export
+  export_fields:
+    - call_type
+    - meeting_count
+    - avg_sentiment
+    - min_sentiment
+    - max_sentiment
+    - positive_meetings
+    - negative_meetings
+
+# Business Impact Metrics
+# -----------------------
+# Used in insight explanations and "why it matters" sections
+business_impact:
+  # Correlation percentages for context
+  churn_risk_increase_pct: 40 # Outages increase churn risk by this %
+
+  # Timeline for follow-up actions (days)
+  followup_timeline_days: 7
+
+  # Priority account tiers
+  priority_tiers:
+    - Priority 1
+    - Priority 2

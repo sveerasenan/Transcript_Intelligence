@@ -64,7 +64,24 @@ transcript_intelligence/
 - Python 3.9 or higher
 - pip or uv package manager
 
-### Step 1: Install Dependencies
+### Step 1: Create Virtual Environment (Recommended)
+
+**Using a virtual environment prevents dependency conflicts with other Python packages.**
+
+```bash
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+
+# Your prompt should now show (venv)
+```
+
+### Step 2: Install Dependencies
 
 ```bash
 # Using pip
@@ -74,7 +91,9 @@ pip install -r requirements.txt
 uv pip install -r requirements.txt
 ```
 
-### Step 2: Verify Dataset Structure
+**Note:** If you see dependency conflict warnings about schema-validator or usp-\* packages, these are from other packages in your global environment. Using a virtual environment (Step 1) isolates this project and prevents conflicts.
+
+### Step 3: Verify Dataset Structure
 
 Ensure your `dataset/` folder contains meeting folders with the following structure:
 
@@ -92,13 +111,18 @@ dataset/
 └── ... (100 total folders)
 ```
 
-### Step 3: Run the Application
+### Step 4: Run the Application
 
 ```bash
+# Make sure your virtual environment is activated (you should see (venv) in your prompt)
 streamlit run app.py
 ```
 
 The application will open in your browser at `http://localhost:8501`
+
+**To stop the application:** Press `Ctrl+C` in the terminal
+
+**To deactivate virtual environment:** Type `deactivate` in the terminal
 
 ## Usage Guide
 
@@ -282,6 +306,37 @@ organizations:
 ## Troubleshooting
 
 ### Common Issues
+
+**Dependency Conflicts (schema-validator, usp-\* packages)**
+
+If you see warnings like:
+
+```
+schema-validator 0.1.0 requires certifi==2025.1.31, but you have certifi 2026.1.4 which is incompatible
+```
+
+**Solution:**
+
+- These conflicts occur when installing into a shared Python environment
+- **Recommended:** Use a virtual environment (see Step 1 in Installation)
+- The warnings are safe to ignore if the app runs correctly
+- To completely resolve: Create fresh virtual environment
+
+```bash
+# Deactivate any existing environment
+deactivate  # if in a venv
+
+# Create fresh virtual environment
+python -m venv transcript_venv
+transcript_venv\Scripts\activate  # Windows
+# or: source transcript_venv/bin/activate  # macOS/Linux
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run app
+streamlit run app.py
+```
 
 **Error: "Dataset path not found"**
 

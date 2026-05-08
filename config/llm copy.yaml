@@ -1,0 +1,305 @@
+# LLM Configuration for Insights Generation
+# ==========================================
+#
+# This file contains configuration for LLM providers (OpenAI, Gemini)
+# used to generate deep insights from meeting transcripts.
+#
+# Author: Aegis Transcript Intelligence Team
+# Date: 2026-05-07
+
+# LLM Provider Settings
+# ---------------------
+# Supported providers: "openai", "gemini"
+provider: "gemini" # Default provider
+
+# OpenAI Configuration
+# --------------------
+openai:
+  model: "gpt-4o" # gpt-4o, gpt-4o-mini, gpt-4-turbo, gpt-3.5-turbo
+  max_tokens: 2000
+  temperature: 0.3 # Lower temperature for more consistent, factual responses
+  api_key_env_var: "OPENAI_API_KEY" # Environment variable name for API key
+
+  # Rate limiting
+  max_retries: 3
+  timeout_seconds: 60
+
+# Google Gemini Configuration
+# ----------------------------
+gemini:
+  model: "gemini-2.5-flash" # gemini-1.5-pro, gemini-1.5-flash, gemini-2.5-flash
+  max_tokens: 8000 # Increased for batch analysis (10 sections + multiple meetings)
+  temperature: 0.3
+  api_key_env_var: "GEMINI_API_KEY" # Environment variable name for API key
+
+  # Rate limiting
+  max_retries: 3
+  timeout_seconds: 60
+
+# Privacy & Security Settings
+# ----------------------------
+privacy:
+  # Fields allowed to be sent to LLM
+  allowed_fields:
+    - meeting_id
+    - summary
+    - sentiment_score
+    - topics
+    - date
+    - overall_sentiment
+    - key_moments
+
+# Text Optimization Settings
+# --------------------------
+# Optimize summaries to reduce token usage
+text_optimization:
+  enabled: true # Enable text optimization to reduce tokens
+  remove_filler_words: true
+  compress_phrases: true
+
+  # Common filler words to remove
+  filler_words:
+    - actually
+    - basically
+    - essentially
+    - literally
+    - obviously
+    - seriously
+    - totally
+    - really
+    - very
+    - quite
+    - rather
+    - somewhat
+    - just
+    - simply
+    - merely
+    - absolutely
+    - completely
+    - definitely
+    - certainly
+    - perhaps
+    - maybe
+    - probably
+    - approximately
+    - roughly
+    - around
+    - kind of
+    - sort of
+    - a bit
+    - a little
+    - a lot
+    - you know
+    - I mean
+    - like
+
+  # Verbose phrases to compress (phrase: replacement)
+  phrase_compressions:
+    "in order to": "to"
+    "due to the fact that": "because"
+    "at this point in time": "now"
+    "for the purpose of": "for"
+    "in the event that": "if"
+    "on a daily basis": "daily"
+    "on a weekly basis": "weekly"
+    "on a monthly basis": "monthly"
+    "has the ability to": "can"
+    "is able to": "can"
+    "in spite of the fact that": "although"
+    "with regard to": "regarding"
+    "with reference to": "regarding"
+    "in relation to": "regarding"
+    "as a result of": "from"
+    "for the reason that": "because"
+    "in light of the fact that": "because"
+    "taking into consideration": "considering"
+    "make a decision": "decide"
+    "come to a decision": "decide"
+    "reach a decision": "decide"
+    "give consideration to": "consider"
+    "take into account": "consider"
+    "prior to": "before"
+    "subsequent to": "after"
+    "in the near future": "soon"
+    "at the present time": "now"
+    "in the process of": "processing"
+    "provide assistance to": "help"
+    "make an attempt": "try"
+    "conduct an investigation": "investigate"
+
+  # PII patterns to redact (emails, names, phone numbers, etc.)
+  redact_patterns:
+    - emails: true
+    - phone_numbers: true
+    - ip_addresses: true
+    - organization_names: true # Replace with generic tokens
+    - person_names: true # Replace with role-based tokens (Agent, Customer)
+
+# Prompt Configuration
+# --------------------
+prompt:
+  # System prompt for context
+  system_prompt: |
+    You are a customer service quality analyst with expertise in analyzing support interactions.
+    You provide objective, actionable insights based on conversation data.
+    Always return valid JSON format. Be concise but thorough.
+
+  # User prompt template (variables: {meeting_id}, {date}, {summary}, {sentiment_score}, {topics})
+  user_prompt_template: |
+    Analyze the following customer support call summary data.
+
+    Meeting ID: {meeting_id}
+    Call Date: {date}
+    Summary: {summary}
+    Topics: {topics}
+    Sentiment Score: {sentiment_score}/5.0
+
+    Return the output in JSON format with the following sections:
+
+    1. overall_summary
+       - concise summary of the conversation
+
+    2. customer_sentiment
+       - overall sentiment based on the summary
+       - key emotional indicators
+       - customer satisfaction level
+
+    3. what_went_well
+       - things the agent handled effectively
+
+    4. what_did_not_go_well
+       - problems, frustrations, or failures
+
+    5. key_customer_issues
+       - main customer complaints or concerns
+
+    6. agent_performance
+       - empathy
+       - professionalism
+       - communication clarity
+       - resolution effectiveness
+
+    7. resolution_status
+       - resolved / unresolved / partially resolved
+
+    8. escalation_risk
+       - low / medium / high
+       - explain why based on the summary
+
+    9. churn_risk
+       - low / medium / high
+       - explain why based on customer issues and resolution
+
+    10. actionable_recommendations
+       - suggested next actions for support team or business
+
+    11. compliance_flags
+       - any compliance or policy concerns mentioned in summary
+
+    12. key_phrases
+       - important concepts or issues from the summary
+
+    13. sentiment_recovery_score
+       - based on resolution status and final outcome
+
+  # Batch analysis prompt template (variables: {meetings_data}, {period_start}, {period_end}, {total_meetings})
+  batch_prompt_template: |
+    Analyze the following batch of customer support calls from a specific time period.
+    Identify patterns, common issues, and provide aggregate insights.
+
+    Time Period: {period_start} to {period_end}
+    Total Meetings Analyzed: {total_meetings}
+
+    Meeting Data (format: Meeting ID, Date, Summary):
+    {meetings_data}
+
+    Return the output in JSON format with the following sections:
+
+    1. period_overview
+       - high-level summary of the time period
+       - overall sentiment trend
+       - total meetings with issues
+
+    2. common_themes
+       - recurring customer issues across meetings
+       - common pain points
+       - frequently mentioned topics
+
+    3. escalation_patterns
+       - meetings requiring immediate attention (list meeting IDs)
+       - common escalation triggers
+       - severity assessment
+
+    4. churn_risk_assessment
+       - high-risk accounts (list meeting IDs and organizations)
+       - churn indicators detected
+       - risk factors
+
+    5. agent_performance_trends
+       - overall agent effectiveness
+       - common strengths across calls
+       - common weaknesses or gaps
+
+    6. product_issues
+       - technical problems mentioned
+       - feature requests or complaints
+       - adoption blockers
+
+    7. actionable_recommendations
+       - immediate actions needed
+       - process improvements
+       - training opportunities
+       - follow-up priorities
+
+    8. sentiment_analysis
+       - percentage of positive/negative/neutral calls
+       - sentiment distribution
+       - calls with most negative sentiment (list meeting IDs)
+
+    9. resolution_effectiveness
+       - percentage resolved/unresolved
+       - average resolution quality
+       - meetings needing follow-up
+
+    10. executive_summary
+       - 3-5 key takeaways for leadership
+       - critical alerts
+       - success stories
+
+# Caching Configuration
+# ---------------------
+cache:
+  # Enable caching of LLM responses to avoid redundant API calls
+  enabled: true
+
+  # Cache duration in seconds (24 hours)
+  ttl_seconds: 86400
+
+  # Cache storage location
+  cache_dir: ".cache/llm_insights"
+
+# Response Validation
+# -------------------
+validation:
+  # Require JSON response format
+  require_json: true
+
+  # Required fields in response (single meeting analysis)
+  required_fields:
+    - overall_summary
+    - customer_sentiment
+    - escalation_risk
+    - churn_risk
+    - resolution_status
+
+  # Required fields for batch analysis
+  batch_required_fields:
+    - period_overview
+    - common_themes
+    - escalation_patterns
+    - churn_risk_assessment
+    - actionable_recommendations
+    - executive_summary
+
+  # Maximum retry attempts if response validation fails
+  max_validation_retries: 2

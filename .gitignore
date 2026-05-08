@@ -26,3 +26,11 @@ Thumbs.db
 
 # Streamlit
 .streamlit/
+
+# Environment variables (API keys)
+.env
+.env.local
+*.env
+
+# LLM cache
+.cache/

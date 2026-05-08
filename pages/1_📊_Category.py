@@ -371,6 +371,15 @@ def main():
                 st.markdown(f"**Confidence:** {format_confidence_badge(selected_meeting['confidence'])}", unsafe_allow_html=True)
                 st.markdown("**Comments:**")
                 st.info(selected_meeting['comments'])
+                
+                # Meeting Summary
+                st.markdown("**Meeting Summary:**")
+                summary_text = selected_meeting.get('summary_text', '')
+                if summary_text and summary_text.strip():
+                    with st.expander("View Full Summary", expanded=False):
+                        st.write(summary_text)
+                else:
+                    st.write("_No summary available_")
             
             # Topics and action items
             st.markdown("**Topics Discussed:**")
